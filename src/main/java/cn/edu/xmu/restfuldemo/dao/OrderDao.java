@@ -53,33 +53,31 @@ public class OrderDao {
                 }
                 item.setOrderItems(orderitemList);
             }
-                retOrders.add(item);
-            }
-            logger.info("findOrders: retOrders = "+retOrders +", withOrderItem ="+withOrderItem);
-            return new ReturnObject<>(retOrders);
+            retOrders.add(item);
         }
+        logger.info("findOrders: retOrders = "+retOrders +", withOrderItem ="+withOrderItem);
+        return new ReturnObject<>(retOrders);
+    }
 
 
-        public  ReturnObject<OrdersVo> createOrders(Orders orders)
+    public  ReturnObject<Orders> createOrders(Orders orders)
+    {
+        OrdersPo ordersPo=orders.getOrdersPo();
+        int ret = orderMapper.createOrders(ordersPo);
+        if(orders.getOrderItemsList()!=null)
         {
-            OrdersPo ordersPo=orders.getOrdersPo();
-            int ret = orderMapper.createOrders(ordersPo);
-            if(orders.getOrderItemsList()!=null)
+            for(OrderItem orderItem:orders.getOrderItemsList())
             {
-                for(OrderItem orderItem:orders.getOrderItemsList())
-                {
-                    OrderItemPo orderitemPo = orderItem.getOrderItemPo();
-                    orderitemPo.setSkuId(0);
-                    orderitemPo.setQuantity(0);
-                    orderitemPo.setCouponActId(0);
-                    ret=orderMapper.createOrderItem(orderitemPo);
-                }
+                OrderItemPo orderitemPo = orderItem.getOrderItemPo();
+                orderitemPo.setSkuId(0);
+                orderitemPo.setQuantity(0);
+                orderitemPo.setCouponActId(0);
+                ret=orderMapper.createOrderItem(orderitemPo);
             }
-            ReturnObject<OrdersVo> returnObject=new ReturnObject<>(orders);
-            return returnObject;
         }
+        ReturnObject<Orders> returnObject=new ReturnObject<>(orders);
+        return returnObject;
+    }
 
 
 }
-
-

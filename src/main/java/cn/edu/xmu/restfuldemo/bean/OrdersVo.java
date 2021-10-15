@@ -4,6 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,7 @@ public class OrdersVo {
     @ApiModelProperty(value = "订单明细")
     private List<OrderItemVo> orderItemsList;
   
+
     @ApiModelProperty(value = "收货人")
     private String consignee;
 
@@ -46,20 +50,24 @@ public class OrdersVo {
         orders.setConsignee(this.consignee);
         orders.setRegionId(this.regionId);
         orders.setAddress(this.address);
-        orders.setMobile(this.mobile);
-        orders.setCouponId(this.couponId);
-        orders.setPresaleId(this.presaleId);
         orders.setGrouponId(this.grouponId);
+        orders.setCouponId(this.couponId);
+        orders.setMobile(this.mobile);
+        orders.setMessage(this.message);
+        orders.setPresaleId(this.presaleId);
+
         if(null!=this.orderItemsList)
         {
-            List<OrderItem> newOrderItem=new ArrayList<>(this.orderItemsList.size());
-            for(OrderItemVo orderItemVo:this.orderItemsList)
-            {
-                OrderItem orderItem=OrderItemVo.createOrderItem();
-                newOrderItem.add(orderItem);
+            List<OrderItem> newOrderItemList = new ArrayList<>(this.orderItemsList.size());
+
+            for(OrderItemVo orderItemVo:this.orderItemsList){
+                OrderItem orderItem=orderItemVo.createOrderItem();
+                newOrderItemList.add(orderItem);
             }
-            orders.setOrderItems(newOrderItem);
+            orders.setOrderItems(newOrderItemList);
         }
+
+
         return orders;
     }
 }
